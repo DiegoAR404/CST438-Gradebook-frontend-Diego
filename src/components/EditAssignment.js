@@ -1,78 +1,71 @@
 import React, { useState } from 'react';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import {SERVER_URL} from '../constants';
 
 
 function EditAssignment(props) { 
   const [assignmentGrades ,setAssignmentGrades] = useState('');
-  let assignmentId=0;
-  const [assignment, setAssignment] = useState('');
-  const [name ,setName] = useState('');
-  const [dueDate ,setDueDate] = useState('');
-  const [message, setMessage] = useState('');
-
-  const path = window.location.pathname;  // /gradebook/123
-  const s = /\d+$/.exec(path)[0];
-  console.log("Grade assignmentId="+s);
-  assignmentId=s;
-
-  useEffect(() => {
-    fetchAssignments()
-   }, [] )
-
  
-  const fetchAssignments = ( ) => {
-      setMessage('');
-      console.log("fetchAssignments "+assignmentId);
-      fetch(`${SERVER_URL}/assignments/${assignmentId}`)
-      .then((response) => response.json()) 
-      .then((data) => { setAssignment(data) })        
-      .catch(err => { 
-        setMessage("Exception. "+err);
-        console.error("fetch grades error "+ err);
-      });
-    }
+  cconst [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [assignment ,setAssignment] = useState('');
 
-  const headers = ['id','Assignment Name','Due Date','Course Title','Course ID'];
+  const handleOpen = () => {
+    setMessage('');
+    setAssignment({ assignmentName:'', dueDate:'',courseId: '' });
+    setOpen(true);
+  };
 
-  const onChangeUpdate = (e) => {
-    console.log("onChangeUpdate "+e.target.value);
-    setAssignment(e.target.value);
+  const handleClose = () => {
+    setOpen(false);
+    props.onClose();
+  };
+
+  const handleChange = (event) => {
+    setAssignment({...assignment, [event.target.name]:event.target.value });
+  }
+
+  const saveAssignment = ( ) => {
+    fetch(`${SERVER_URL}/assignment/${assignment.id}`, 
+      {  
+        method: 'PUT', 
+        headers: { 'Content-Type': 'application/json', }, 
+        body: JSON.stringify(assignment)
+      } 
+    )
+    .then((response) => { 
+      if (response.ok) {
+          setMessage('Assignment saved.');
+      } else {
+          setMessage("Save failed." + response.status);
+      }
+   } )
+  .catch((err) =>  { setMessage('Error. '+err) } );
   }
 
   return (
     <div>
-      <h3>Add Edit Assignment</h3>
-      <div margin="auto" >
-        <h4 id="amessage" >{message}&nbsp;</h4>
-        <table className="Center"> 
-          <thead>
-            <tr>
-              {headers.map((title, idx) => (<th key={idx}>{title}</th>))}
-            </tr>
-          </thead>
-          <tbody>
-            {assignment.map((row,idx) => (
-              <tr key={idx}>
-                <td>{row.id}</td>
-                <td>{row.name}</td>
-                <td>{row.dueDate}</td>
-                <td>{row.courseTitle}</td>
-                <td>{row.courseId}</td>
-                <td>
-                <input
-                    name="assignment"
-                    value={(row.assignment)? row.assignment : ""}  
-                    type="text"
-                    onChange={(e) => onChangeInput(e, idx)}
-                />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <button id="sedit" type="button" margin="auto" onClick={saveAssignment}>Edit Assignment</button>
-      </div>
+      <button type="button" margin="auto" onClick={handleOpen}>Edit</button>
+      <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Edit Assignment</DialogTitle>
+          <DialogContent  style={{paddingTop: 20}} >
+            <h4>{message}</h4>
+            <TextField fullWidth label="Id" name="id" value={assignment.id} InputProps={{readOnly: true, }}/>
+            <TextField autoFocus fullWidth label="Name" name="assignmentName" value={assignment.assignmentName} onChange={handleChange}  /> 
+            <TextField fullWidth label="Due Date" name="dueDate" value={assignment.dueDate} onChange={handleChange}  /> 
+          </DialogContent>
+          <DialogActions>
+            <Button color="secondary" onClick={handleClose}>Close</Button>
+            <Button color="primary" onClick={saveAssignment}>Save</Button>
+          </DialogActions>
+        </Dialog>      
     </div>
-  );
+); 
 }
 
 export default EditAssignment;
