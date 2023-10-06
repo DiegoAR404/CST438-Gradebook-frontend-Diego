@@ -9,9 +9,8 @@ import {SERVER_URL} from '../constants';
 
 
 function EditAssignment(props) { 
-  const [assignmentGrades ,setAssignmentGrades] = useState('');
  
-  cconst [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [assignment ,setAssignment] = useState('');
 

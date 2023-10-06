@@ -1,4 +1,5 @@
 import './App.css';
+import React  from 'react';
 import {BrowserRouter, Switch, Route } from 'react-router-dom';
 import ListAssignment from './components/ListAssignment';
 import GradeAssignment from './components/GradeAssignment';
@@ -12,7 +13,7 @@ function App() {
       <BrowserRouter>
           <div>
             <Switch>
-              <Route exact path="/" component={ListAssignment} />
+            <Route exact path="/" component={ListAssignment} />
               <Route path="/gradeAssignment" component={GradeAssignment} />
               <Route path="/addAssignment" component={AddAssignment} />
               <Route path="/editAssignment" component={EditAssignment} />
