@@ -38,7 +38,7 @@ function AddAssignment(props) {
     )
     .then((response) => { 
       if (response.ok) {
-          setMessage('Assignment added.');
+          setMessage("Assignment added.");
       } else {
           setMessage("Add failed.");
       }
@@ -49,7 +49,7 @@ function AddAssignment(props) {
 
   return (
     <div>
-      <button type="button" margin="auto" onClick={handleOpen}>Add Assignment</button>
+      <button id="addAssignment" type="button" margin="auto" onClick={handleOpen}>Add Assignment</button>
       <Dialog open={open} onClose={handleClose}>
           <DialogTitle>New Assignment</DialogTitle>
           <DialogContent  style={{paddingTop: 20}} >

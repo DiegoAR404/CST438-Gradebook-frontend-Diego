@@ -59,8 +59,8 @@ function EditAssignment(props) {
             <TextField fullWidth label="Due Date" name="dueDate" value={assignment.dueDate} onChange={handleChange}  /> 
           </DialogContent>
           <DialogActions>
-            <Button color="secondary" onClick={handleClose}>Close</Button>
-            <Button color="primary" onClick={saveAssignment}>Save</Button>
+            <Button id="close" color="secondary" onClick={handleClose}>Close</Button>
+            <Button id="save" color="primary" onClick={saveAssignment}>Save</Button>
           </DialogActions>
         </Dialog>      
     </div>
